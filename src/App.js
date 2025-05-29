@@ -40,22 +40,26 @@ export default function App() {
   }, [intervalMin, audioEnabled]);
 
   const pad = (v) => String(v).padStart(2, '0');
-
-  // デプロイ後のファイル更新日時を取得
   const lastModified = document.lastModified;
 
   return (
     <div
       style={{
-        position: 'relative',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: '100vh',
+        height: '-webkit-fill-available',
+        width: '100vw',
+        paddingBottom: 'calc(env(safe-area-inset-bottom) + 10px)',
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
-        width: '100vw',
         fontFamily: 'sans-serif',
-        // ブライトイエローでポップにフラッシュ
         backgroundColor: blinking ? '#ffeb3b' : 'white',
         transition: 'background-color 0.2s ease-out',
         textAlign: 'center',
@@ -94,11 +98,11 @@ export default function App() {
           音声を有効にする
         </button>
       )}
-      {/* 更新日時の表示：デプロイ後のファイル更新日時 */}
+      {/* 更新日時の表示: デプロイ後のファイル更新日時 */}
       <div
         style={{
           position: 'absolute',
-          bottom: '10px',
+          bottom: 'calc(env(safe-area-inset-bottom) + 10px)',
           fontSize: '0.8rem',
           color: '#666',
         }}
