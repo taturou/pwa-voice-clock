@@ -3,15 +3,20 @@ import React, { useEffect, useState } from 'react';
 export default function App() {
   const [now, setNow] = useState(new Date());
   const [intervalMin, setIntervalMin] = useState(5);
+  const [blinking, setBlinking] = useState(false);
 
   useEffect(() => {
     const tick = () => {
       const curr = new Date();
       setNow(curr);
       if (curr.getSeconds() === 0 && curr.getMinutes() % intervalMin === 0) {
+        // 読み上げ
         const msg = `${curr.getHours()}時${curr.getMinutes()}分です`;
         const utterance = new SpeechSynthesisUtterance(msg);
         speechSynthesis.speak(utterance);
+        // 点滅エフェクト
+        setBlinking(true);
+        setTimeout(() => setBlinking(false), 500);
       }
     };
     tick();
@@ -22,14 +27,19 @@ export default function App() {
   const pad = (v) => String(v).padStart(2, '0');
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      fontFamily: 'sans-serif',
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        width: '100vw',
+        fontFamily: 'sans-serif',
+        backgroundColor: blinking ? 'red' : 'white',
+        transition: 'background-color 0.5s ease',
+      }}
+    >
       <h1>現在時刻</h1>
       <p style={{ fontSize: '3rem', margin: 0 }}>
         {pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}
