@@ -26,12 +26,12 @@ export default function App() {
         audioEnabled
       ) {
         // 読み上げ
-        const msg = `現在の時刻は${curr.getHours()}時${curr.getMinutes()}分です`;
+        const msg = `${curr.getHours()}時${curr.getMinutes()}分です`;
         const utterance = new SpeechSynthesisUtterance(msg);
         speechSynthesis.speak(utterance);
-        // 点滅エフェクト
+        // ポップな点滅エフェクト（短時間で強くフラッシュ）
         setBlinking(true);
-        setTimeout(() => setBlinking(false), 500);
+        setTimeout(() => setBlinking(false), 200);
       }
     };
     tick();
@@ -41,9 +41,13 @@ export default function App() {
 
   const pad = (v) => String(v).padStart(2, '0');
 
+  // デプロイ後のファイル更新日時を取得
+  const lastModified = document.lastModified;
+
   return (
     <div
       style={{
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -51,8 +55,9 @@ export default function App() {
         height: '100vh',
         width: '100vw',
         fontFamily: 'sans-serif',
-        backgroundColor: blinking ? 'red' : 'white',
-        transition: 'background-color 0.5s ease',
+        // ブライトイエローでポップにフラッシュ
+        backgroundColor: blinking ? '#ffeb3b' : 'white',
+        transition: 'background-color 0.2s ease-out',
         textAlign: 'center',
       }}
     >
@@ -89,6 +94,17 @@ export default function App() {
           音声を有効にする
         </button>
       )}
+      {/* 更新日時の表示：デプロイ後のファイル更新日時 */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '10px',
+          fontSize: '0.8rem',
+          color: '#666',
+        }}
+      >
+        更新日時: {lastModified}
+      </div>
     </div>
   );
 }
