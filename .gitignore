@@ -1,10 +1,2 @@
-node_modules
-build/asset-manifest.json
-build/index.html
-build/manifest.json
-build/sw.js
-build/static/css/main.c95696d9.css
-build/static/css/main.c95696d9.css.map
-build/static/js/main.0abc5117.js
-build/static/js/main.0abc5117.js.LICENSE.txt
-build/static/js/main.0abc5117.js.map
+/node_modules
+/build
