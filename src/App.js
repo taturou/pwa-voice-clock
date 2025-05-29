@@ -4,14 +4,29 @@ export default function App() {
   const [now, setNow] = useState(new Date());
   const [intervalMin, setIntervalMin] = useState(5);
   const [blinking, setBlinking] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+
+  // ユーザー操作により音声を有効化
+  const enableAudio = () => {
+    if (!audioEnabled) {
+      setAudioEnabled(true);
+      // 空の発話でオーディオの再生ロックを解除
+      const unlockUtterance = new SpeechSynthesisUtterance('');
+      speechSynthesis.speak(unlockUtterance);
+    }
+  };
 
   useEffect(() => {
     const tick = () => {
       const curr = new Date();
       setNow(curr);
-      if (curr.getSeconds() === 0 && curr.getMinutes() % intervalMin === 0) {
+      if (
+        curr.getSeconds() === 0 &&
+        curr.getMinutes() % intervalMin === 0 &&
+        audioEnabled
+      ) {
         // 読み上げ
-        const msg = `${curr.getHours()}時${curr.getMinutes()}分です`;
+        const msg = `現在の時刻は${curr.getHours()}時${curr.getMinutes()}分です`;
         const utterance = new SpeechSynthesisUtterance(msg);
         speechSynthesis.speak(utterance);
         // 点滅エフェクト
@@ -22,7 +37,7 @@ export default function App() {
     tick();
     const timerId = setInterval(tick, 1000);
     return () => clearInterval(timerId);
-  }, [intervalMin]);
+  }, [intervalMin, audioEnabled]);
 
   const pad = (v) => String(v).padStart(2, '0');
 
@@ -38,6 +53,7 @@ export default function App() {
         fontFamily: 'sans-serif',
         backgroundColor: blinking ? 'red' : 'white',
         transition: 'background-color 0.5s ease',
+        textAlign: 'center',
       }}
     >
       <h1>現在時刻</h1>
@@ -60,6 +76,19 @@ export default function App() {
           ))}
         </select>
       </div>
+      {!audioEnabled && (
+        <button
+          onClick={enableAudio}
+          style={{
+            marginTop: '1rem',
+            padding: '0.5rem 1rem',
+            fontSize: '1rem',
+            cursor: 'pointer',
+          }}
+        >
+          音声を有効にする
+        </button>
+      )}
     </div>
   );
 }
