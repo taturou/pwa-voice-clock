@@ -5,14 +5,13 @@ export default function App() {
   const [intervalMin, setIntervalMin] = useState(5);
   const [blinking, setBlinking] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [targetTime, setTargetTime] = useState(''); // HH:MM
 
-  // ユーザー操作により音声を有効化
   const enableAudio = () => {
     if (!audioEnabled) {
       setAudioEnabled(true);
-      // 空の発話でオーディオの再生ロックを解除
-      const unlockUtterance = new SpeechSynthesisUtterance('');
-      speechSynthesis.speak(unlockUtterance);
+      const unlock = new SpeechSynthesisUtterance('');
+      speechSynthesis.speak(unlock);
     }
   };
 
@@ -20,24 +19,36 @@ export default function App() {
     const tick = () => {
       const curr = new Date();
       setNow(curr);
+
       if (
         curr.getSeconds() === 0 &&
         curr.getMinutes() % intervalMin === 0 &&
         audioEnabled
       ) {
-        // 読み上げ
-        const msg = `${curr.getHours()}時${curr.getMinutes()}分です`;
-        const utterance = new SpeechSynthesisUtterance(msg);
-        speechSynthesis.speak(utterance);
-        // ポップな点滅エフェクト（短時間で強くフラッシュ）
+        const hours = curr.getHours();
+        const mins = curr.getMinutes();
+
+        let msg = `${hours}時${mins}分です`;
+        if (targetTime) {
+          const [tH, tM] = targetTime.split(':').map(Number);
+          const tgt = new Date(curr);
+          tgt.setHours(tH, tM, 0, 0);
+          const diffM = Math.ceil((tgt - curr) / 60000);
+          if (diffM > 0) {
+            msg += `。目標まであと${diffM}分です`;
+          } else {
+            msg += `。指定時刻を過ぎました`;
+          }
+        }
+        speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
         setBlinking(true);
         setTimeout(() => setBlinking(false), 200);
       }
     };
     tick();
-    const timerId = setInterval(tick, 1000);
-    return () => clearInterval(timerId);
-  }, [intervalMin, audioEnabled]);
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [intervalMin, audioEnabled, targetTime]);
 
   const pad = (v) => String(v).padStart(2, '0');
   const lastModified = document.lastModified;
@@ -70,14 +81,8 @@ export default function App() {
         {pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}
       </p>
       <div style={{ marginTop: '1rem' }}>
-        <label htmlFor="interval" style={{ marginRight: '0.5rem' }}>
-          読み上げ間隔（分）:
-        </label>
-        <select
-          id="interval"
-          value={intervalMin}
-          onChange={(e) => setIntervalMin(Number(e.target.value))}
-        >
+        <label style={{ marginRight: '0.5rem' }}>読み上げ間隔（分）:</label>
+        <select value={intervalMin} onChange={(e) => setIntervalMin(Number(e.target.value))}>
           {Array.from({ length: 60 }, (_, i) => i + 1).map((n) => (
             <option key={n} value={n}>
               {n}
@@ -85,20 +90,22 @@ export default function App() {
           ))}
         </select>
       </div>
+      <div style={{ marginTop: '1rem' }}>
+        <label style={{ marginRight: '0.5rem' }}>目標時刻:</label>
+        <input
+          type="time"
+          value={targetTime}
+          onChange={(e) => setTargetTime(e.target.value)}
+        />
+      </div>
       {!audioEnabled && (
         <button
           onClick={enableAudio}
-          style={{
-            marginTop: '1rem',
-            padding: '0.5rem 1rem',
-            fontSize: '1rem',
-            cursor: 'pointer',
-          }}
+          style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '1rem', cursor: 'pointer' }}
         >
           音声を有効にする
         </button>
       )}
-      {/* 更新日時の表示: デプロイ後のファイル更新日時 */}
       <div
         style={{
           position: 'absolute',
