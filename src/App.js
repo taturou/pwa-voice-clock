@@ -17,6 +17,11 @@ export default function App() {
     }
   };
 
+  // 目標時刻をクリア
+  const clearTargetTime = () => {
+    setTargetTime('');
+  };
+
   useEffect(() => {
     if (!audioEnabled) return;
     const tick = () => {
@@ -141,13 +146,26 @@ export default function App() {
           ))}
         </select>
       </div>
-      <div style={{ marginTop: '1rem' }}>
+      <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center' }}>
         <label style={{ marginRight: '0.5rem' }}>目標時刻:</label>
         <input
           type="time"
           value={targetTime}
           onChange={(e) => setTargetTime(e.target.value)}
         />
+        {targetTime && (
+          <button
+            onClick={clearTargetTime}
+            style={{
+              marginLeft: '0.5rem',
+              padding: '0.5rem 1rem',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+            }}
+          >
+            クリア
+          </button>
+        )}
       </div>
       <div
         style={{
