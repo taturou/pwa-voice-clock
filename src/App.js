@@ -52,6 +52,8 @@ export default function App() {
           let remMsg = '';
           if (diffM > 0) {
             remMsg = `あと${diffM}分です`;
+          } else if (diffM === 0) {
+            remMsg = `指定時刻になりました`;
           } else {
             remMsg = `指定時刻を過ぎました`;
           }
