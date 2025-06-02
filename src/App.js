@@ -27,20 +27,31 @@ export default function App() {
       ) {
         const hours = curr.getHours();
         const mins = curr.getMinutes();
-
-        let msg = `${hours}時${mins}分です`;
+        // 時刻読み上げ：分が0のときは「○時ちょうどです」
+        let timeMsg = '';
+        if (mins === 0) {
+          timeMsg = `${hours}時ちょうどです`;
+        } else {
+          timeMsg = `${hours}時${mins}分です`;
+        }
+        speechSynthesis.speak(new SpeechSynthesisUtterance(timeMsg));
+        // 残り分数読み上げ（0.5秒後）
         if (targetTime) {
           const [tH, tM] = targetTime.split(':').map(Number);
           const tgt = new Date(curr);
           tgt.setHours(tH, tM, 0, 0);
           const diffM = Math.ceil((tgt - curr) / 60000);
+          let remMsg = '';
           if (diffM > 0) {
-            msg += `。目標まであと${diffM}分です`;
+            remMsg = `あと${diffM}分です`;
           } else {
-            msg += `。指定時刻を過ぎました`;
+            remMsg = `指定時刻を過ぎました`;
           }
+          setTimeout(() => {
+            speechSynthesis.speak(new SpeechSynthesisUtterance(remMsg));
+          }, 500);
         }
-        speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
+        // 点滅エフェクト
         setBlinking(true);
         setTimeout(() => setBlinking(false), 200);
       }
