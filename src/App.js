@@ -7,15 +7,18 @@ export default function App() {
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [targetTime, setTargetTime] = useState(''); // HH:MM
 
+  // 音声有効化および UI 初期化
   const enableAudio = () => {
     if (!audioEnabled) {
       setAudioEnabled(true);
+      // 空の発話でオーディオの再生ロックを解除
       const unlock = new SpeechSynthesisUtterance('');
       speechSynthesis.speak(unlock);
     }
   };
 
   useEffect(() => {
+    if (!audioEnabled) return;
     const tick = () => {
       const curr = new Date();
       setNow(curr);
@@ -64,6 +67,43 @@ export default function App() {
   const pad = (v) => String(v).padStart(2, '0');
   const lastModified = document.lastModified;
 
+  // 音声有効化前のモーダル表示
+  if (!audioEnabled) {
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#ffffff',
+          textAlign: 'center',
+          fontFamily: 'sans-serif',
+          padding: '1rem',
+        }}
+      >
+        <h2>音声を有効にしてください</h2>
+        <button
+          onClick={enableAudio}
+          style={{
+            marginTop: '1rem',
+            padding: '0.75rem 1.5rem',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+          }}
+        >
+          音声を有効にする
+        </button>
+      </div>
+    );
+  }
+
+  // メイン画面
   return (
     <div
       style={{
@@ -109,14 +149,6 @@ export default function App() {
           onChange={(e) => setTargetTime(e.target.value)}
         />
       </div>
-      {!audioEnabled && (
-        <button
-          onClick={enableAudio}
-          style={{ marginTop: '1rem', padding: '0.5rem 1rem', fontSize: '1rem', cursor: 'pointer' }}
-        >
-          音声を有効にする
-        </button>
-      )}
       <div
         style={{
           position: 'absolute',
