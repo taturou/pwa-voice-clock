@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react';
 
 export default function App() {
   const [now, setNow] = useState(new Date());
-  const [intervalMin, setIntervalMin] = useState(5);
+  const [intervalMin, setIntervalMin] = useState(() => {
+    const saved = localStorage.getItem('intervalMin');
+    return saved ? Number(saved) : 5;
+  });
   const [blinking, setBlinking] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
-  const [targetTime, setTargetTime] = useState(''); // HH:MM
+  const [targetTime, setTargetTime] = useState(() => {
+    const saved = localStorage.getItem('targetTime');
+    return saved || '';
+  });
 
   // 音声有効化および UI 初期化
   const enableAudio = () => {
@@ -17,10 +23,20 @@ export default function App() {
     }
   };
 
-  // 目標時刻をクリア
+  // 目標時刻をクリア（空にする）
   const clearTargetTime = () => {
     setTargetTime('');
   };
+
+  // intervalMin 保存
+  useEffect(() => {
+    localStorage.setItem('intervalMin', intervalMin.toString());
+  }, [intervalMin]);
+
+  // targetTime 保存
+  useEffect(() => {
+    localStorage.setItem('targetTime', targetTime);
+  }, [targetTime]);
 
   useEffect(() => {
     if (!audioEnabled) return;
