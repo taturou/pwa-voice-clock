@@ -139,7 +139,7 @@ export default function App() {
       </div>
       {/* 更新日時: 画面下部固定 */}
       <div style={{
-        position:'fixed', bottom:'calc(env(safe-area-inset-bottom)+10px)', left:0, width:'100%', textAlign:'center',
+        position:'absolute', bottom:'calc(env(safe-area-inset-bottom)+10px)', left:0, width:'100%', textAlign:'center',
         fontSize:'0.8rem', color:'#666'
       }}>
         更新日時: {lastModified}
