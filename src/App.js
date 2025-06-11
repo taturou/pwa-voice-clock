@@ -137,10 +137,9 @@ export default function App() {
           </button>
         )}
       </div>
-      {/* 更新日時: 画面下部固定 */}
+      {/* 更新日時: 目標時刻の下に表示 */}
       <div style={{
-        position:'absolute', bottom:'calc(env(safe-area-inset-bottom)+10px)', left:0, width:'100%', textAlign:'center',
-        fontSize:'0.8rem', color:'#666'
+        marginTop:'1rem', fontSize:'0.8rem', color:'#666'
       }}>
         更新日時: {lastModified}
       </div>
