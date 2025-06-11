@@ -71,7 +71,8 @@ export default function App() {
           } else if (diffM === 0) {
             remMsg = `指定時刻になりました`;
           } else {
-            remMsg = `指定時刻を過ぎました`;
+            const late = Math.abs(diffM);
+            remMsg = `${late}分遅れです`;
           }
           setTimeout(() => {
             speechSynthesis.speak(new SpeechSynthesisUtterance(remMsg));
