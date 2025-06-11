@@ -99,7 +99,9 @@ export default function App() {
         backgroundColor:'#fff',textAlign:'center',fontFamily:'sans-serif',padding:'1rem'
       }}>
         <h2>音声を有効にしてください</h2>
-        <button onClick={enableAudio} style={{marginTop:'1rem',padding:'0.75rem 1.5rem',fontSize:'1.2rem',cursor:'pointer'}}>音声を有効にする</button>
+        <button onClick={enableAudio} style={{
+          marginTop:'1rem',padding:'0.75rem 1.5rem',fontSize:'1.2rem',cursor:'pointer'
+        }}>音声を有効にする</button>
       </div>
     );
   }
@@ -107,15 +109,17 @@ export default function App() {
   // Main UI
   return (
     <div style={{
-      position:'fixed',top:0,left:0,right:0,bottom:0,
+      position:'fixed', top:0,left:0,right:0,bottom:0,
       height:'100vh',height:'-webkit-fill-available',width:'100vw',
-      paddingBottom:'calc(env(safe-area-inset-bottom)+10px)',boxSizing:'border-box',
+      paddingBottom:'calc(env(safe-area-inset-bottom)+30px)',boxSizing:'border-box',
       display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
       fontFamily:'sans-serif',backgroundColor:blinking?'#ffeb3b':'white',transition:'background-color 0.2s ease-out',textAlign:'center'
     }}>
       <h1>現在時刻</h1>
       <p style={{fontSize:'3rem',margin:0}}>{pad(now.getHours())}:{pad(now.getMinutes())}:{pad(now.getSeconds())}</p>
-      <button onClick={speakCurrentTime} style={{marginTop:'1rem',padding:'0.5rem 1rem',fontSize:'1rem',cursor:'pointer'}}>現在時刻を音声で伝える</button>
+      <button onClick={speakCurrentTime} style={{marginTop:'1rem',padding:'0.5rem 1rem',fontSize:'1rem',cursor:'pointer'}}>
+        現在時刻を音声で伝える
+      </button>
       <div style={{marginTop:'1rem'}}>
         <label style={{marginRight:'0.5rem'}}>読み上げ間隔（分）:</label>
         <select value={intervalMin} onChange={(e)=>setIntervalMin(Number(e.target.value))}>
@@ -125,9 +129,21 @@ export default function App() {
       <div style={{marginTop:'1rem',display:'flex',alignItems:'center'}}>
         <label style={{marginRight:'0.5rem'}}>目標時刻:</label>
         <input type="time" value={targetTime} onChange={e=>setTargetTime(e.target.value)}/>
-        {targetTime && <button onClick={clearTargetTime} style={{marginLeft:'0.5rem',padding:'0.5rem 1rem',fontSize:'0.9rem',cursor:'pointer'}}>クリア</button>}
+        {targetTime && (
+          <button onClick={clearTargetTime} style={{
+            marginLeft:'0.5rem',padding:'0.5rem 1rem',fontSize:'0.9rem',cursor:'pointer'
+          }}>
+            クリア
+          </button>
+        )}
       </div>
-      <div style={{position:'absolute',bottom:'calc(env(safe-area-inset-bottom)+10px)',fontSize:'0.8rem',color:'#666'}}>更新日時: {lastModified}</div>
+      {/* 更新日時: 画面下部固定 */}
+      <div style={{
+        position:'fixed', bottom:'calc(env(safe-area-inset-bottom)+10px)', left:0, width:'100%', textAlign:'center',
+        fontSize:'0.8rem', color:'#666'
+      }}>
+        更新日時: {lastModified}
+      </div>
     </div>
   );
 }
